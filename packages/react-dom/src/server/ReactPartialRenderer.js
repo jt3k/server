@@ -7,9 +7,9 @@
  * @flow
  */
 
-import type {ThreadID} from './ReactThreadIDAllocator';
-import type {ReactElement} from 'shared/ReactElementType';
-import type {ReactProvider, ReactContext} from 'shared/ReactTypes';
+import type { ThreadID } from './ReactThreadIDAllocator';
+import type { ReactElement } from 'shared/ReactElementType';
+import type { ReactProvider, ReactContext } from 'shared/ReactTypes';
 
 import React from 'react';
 import invariant from 'shared/invariant';
@@ -47,7 +47,7 @@ import {
   processContext,
   validateContextBounds,
 } from './ReactPartialRendererContext';
-import {allocThreadID, freeThreadID} from './ReactThreadIDAllocator';
+import { allocThreadID, freeThreadID } from './ReactThreadIDAllocator';
 import {
   createMarkupForCustomAttribute,
   createMarkupForProperty,
@@ -73,9 +73,9 @@ import hyphenateStyleName from '../shared/hyphenateStyleName';
 import isCustomComponent from '../shared/isCustomComponent';
 import omittedCloseTags from '../shared/omittedCloseTags';
 import warnValidStyle from '../shared/warnValidStyle';
-import {validateProperties as validateARIAProperties} from '../shared/ReactDOMInvalidARIAHook';
-import {validateProperties as validateInputProperties} from '../shared/ReactDOMNullInputValuePropHook';
-import {validateProperties as validateUnknownProperties} from '../shared/ReactDOMUnknownPropertyHook';
+import { validateProperties as validateARIAProperties } from '../shared/ReactDOMInvalidARIAHook';
+import { validateProperties as validateInputProperties } from '../shared/ReactDOMNullInputValuePropHook';
+import { validateProperties as validateUnknownProperties } from '../shared/ReactDOMUnknownPropertyHook';
 
 // Based on reading the React.Children implementation. TODO: type this somewhere?
 type ReactNode = string | number | ReactElement;
@@ -95,22 +95,22 @@ let prevGetCurrentStackImpl = null;
 let getCurrentServerStackImpl = () => '';
 let describeStackFrame = element => '';
 
-let validatePropertiesInDevelopment = (type, props) => {};
-let pushCurrentDebugStack = (stack: Array<Frame>) => {};
-let pushElementToDebugStack = (element: ReactElement) => {};
-let popCurrentDebugStack = () => {};
+let validatePropertiesInDevelopment = (type, props) => { };
+let pushCurrentDebugStack = (stack: Array<Frame>) => { };
+let pushElementToDebugStack = (element: ReactElement) => { };
+let popCurrentDebugStack = () => { };
 let hasWarnedAboutUsingContextAsConsumer = false;
 
 if (__DEV__) {
   ReactDebugCurrentFrame = ReactSharedInternals.ReactDebugCurrentFrame;
 
-  validatePropertiesInDevelopment = function(type, props) {
+  validatePropertiesInDevelopment = function (type, props) {
     validateARIAProperties(type, props);
     validateInputProperties(type, props);
     validateUnknownProperties(type, props, /* canUseEventSystem */ false);
   };
 
-  describeStackFrame = function(element): string {
+  describeStackFrame = function (element): string {
     const source = element._source;
     const type = element.type;
     const name = getComponentName(type);
@@ -118,7 +118,7 @@ if (__DEV__) {
     return describeComponentFrame(name, source, ownerName);
   };
 
-  pushCurrentDebugStack = function(stack: Array<Frame>) {
+  pushCurrentDebugStack = function (stack: Array<Frame>) {
     currentDebugStacks.push(stack);
 
     if (currentDebugStacks.length === 1) {
@@ -129,7 +129,7 @@ if (__DEV__) {
     }
   };
 
-  pushElementToDebugStack = function(element: ReactElement) {
+  pushElementToDebugStack = function (element: ReactElement) {
     // For the innermost executing ReactDOMServer call,
     const stack = currentDebugStacks[currentDebugStacks.length - 1];
     // Take the innermost executing frame (e.g. <Foo>),
@@ -141,7 +141,7 @@ if (__DEV__) {
     // creating separate frames for them.
   };
 
-  popCurrentDebugStack = function() {
+  popCurrentDebugStack = function () {
     currentDebugStacks.pop();
 
     if (currentDebugStacks.length === 0) {
@@ -152,7 +152,7 @@ if (__DEV__) {
     }
   };
 
-  getCurrentServerStackImpl = function(): string {
+  getCurrentServerStackImpl = function (): string {
     if (currentDebugStacks.length === 0) {
       // Nothing is currently rendering.
       return '';
@@ -197,7 +197,7 @@ const newlineEatingTags = {
 // We accept any tag to be rendered but since this gets injected into arbitrary
 // HTML, we want to make sure that it's a safe tag.
 // http://www.w3.org/TR/REC-xml/#NT-Name
-const VALID_TAG_REGEX = /^[a-zA-Z][a-zA-Z:_\.\-\d]*$/; // Simplified subset
+const VALID_TAG_REGEX = /^[a-zA-Z][a-zA-Z:_.\-\d]*$/; // Simplified subset
 const validatedTagCache = {};
 function validateDangerousTag(tag) {
   if (!validatedTagCache.hasOwnProperty(tag)) {
@@ -207,7 +207,7 @@ function validateDangerousTag(tag) {
 }
 
 const styleNameCache = {};
-const processStyleName = function(styleName) {
+const processStyleName = function (styleName) {
   if (styleNameCache.hasOwnProperty(styleName)) {
     return styleNameCache[styleName];
   }
@@ -260,8 +260,8 @@ function warnNoop(
     warningWithoutStack(
       false,
       '%s(...): Can only update a mounting component. ' +
-        'This usually means you called %s() outside componentWillMount() on the server. ' +
-        'This is a no-op.\n\nPlease check the code for the %s component.',
+      'This usually means you called %s() outside componentWillMount() on the server. ' +
+      'This is a no-op.\n\nPlease check the code for the %s component.',
       callerName,
       callerName,
       componentName,
@@ -312,7 +312,7 @@ function flattenOptionChildren(children: mixed): ?string {
   let content = '';
   // Flatten children and warn if they aren't strings or numbers;
   // invalid types are ignored.
-  React.Children.forEach(children, function(child) {
+  React.Children.forEach(children, function (child) {
     if (child == null) {
       return;
     }
@@ -394,8 +394,8 @@ function validateRenderResult(child, type) {
     invariant(
       false,
       '%s(...): Nothing was returned from render. This usually means a ' +
-        'return statement is missing. Or, to render nothing, ' +
-        'return null.',
+      'return statement is missing. Or, to render nothing, ' +
+      'return null.',
       getComponentName(type) || 'Component',
     );
   }
@@ -407,7 +407,7 @@ function resolve(
   threadID: ThreadID,
 ): {|
   child: mixed,
-  context: Object,
+    context: Object,
 |} {
   while (React.isValidElement(child)) {
     // Safe because we just checked it's an element.
@@ -429,20 +429,20 @@ function resolve(
     let queue = [];
     let replace = false;
     let updater = {
-      isMounted: function(publicInstance) {
+      isMounted: function (publicInstance) {
         return false;
       },
-      enqueueForceUpdate: function(publicInstance) {
+      enqueueForceUpdate: function (publicInstance) {
         if (queue === null) {
           warnNoop(publicInstance, 'forceUpdate');
           return null;
         }
       },
-      enqueueReplaceState: function(publicInstance, completeState) {
+      enqueueReplaceState: function (publicInstance, completeState) {
         replace = true;
         queue = [completeState];
       },
-      enqueueSetState: function(publicInstance, currentPartialState) {
+      enqueueSetState: function (publicInstance, currentPartialState) {
         if (queue === null) {
           warnNoop(publicInstance, 'setState');
           return null;
@@ -463,9 +463,9 @@ function resolve(
               warningWithoutStack(
                 false,
                 '`%s` uses `getDerivedStateFromProps` but its initial state is ' +
-                  '%s. This is not recommended. Instead, define the initial state by ' +
-                  'assigning an object to `this.state` in the constructor of `%s`. ' +
-                  'This ensures that `getDerivedStateFromProps` arguments have a consistent shape.',
+                '%s. This is not recommended. Instead, define the initial state by ' +
+                'assigning an object to `this.state` in the constructor of `%s`. ' +
+                'This ensures that `getDerivedStateFromProps` arguments have a consistent shape.',
                 componentName,
                 inst.state === null ? 'null' : 'undefined',
                 componentName,
@@ -488,7 +488,7 @@ function resolve(
               warningWithoutStack(
                 false,
                 '%s.getDerivedStateFromProps(): A valid state object (or null) must be returned. ' +
-                  'You have returned undefined.',
+                'You have returned undefined.',
                 componentName,
               );
               didWarnAboutUndefinedDerivedState[componentName] = true;
@@ -512,7 +512,7 @@ function resolve(
             warningWithoutStack(
               false,
               "The <%s /> component appears to have a render method, but doesn't extend React.Component. " +
-                'This is likely to cause errors. Change %s to extend React.Component instead.',
+              'This is likely to cause errors. Change %s to extend React.Component instead.',
               componentName,
               componentName,
             );
@@ -537,10 +537,10 @@ function resolve(
           warningWithoutStack(
             false,
             'The <%s /> component appears to be a function component that returns a class instance. ' +
-              'Change %s to a class that extends React.Component instead. ' +
-              "If you can't use a class try assigning the prototype on the function as a workaround. " +
-              "`%s.prototype = React.Component.prototype`. Don't use an arrow function since it " +
-              'cannot be called with `new` by React.',
+            'Change %s to a class that extends React.Component instead. ' +
+            "If you can't use a class try assigning the prototype on the function as a workaround. " +
+            "`%s.prototype = React.Component.prototype`. Don't use an arrow function since it " +
+            'cannot be called with `new` by React.',
             componentName,
             componentName,
             componentName,
@@ -574,12 +574,12 @@ function resolve(
               lowPriorityWarning(
                 false,
                 '%s: componentWillMount() is deprecated and will be ' +
-                  'removed in the next major version. Read about the motivations ' +
-                  'behind this change: ' +
-                  'https://fb.me/react-async-component-lifecycle-hooks' +
-                  '\n\n' +
-                  'As a temporary workaround, you can rename to ' +
-                  'UNSAFE_componentWillMount instead.',
+                'removed in the next major version. Read about the motivations ' +
+                'behind this change: ' +
+                'https://fb.me/react-async-component-lifecycle-hooks' +
+                '\n\n' +
+                'As a temporary workaround, you can rename to ' +
+                'UNSAFE_componentWillMount instead.',
                 componentName,
               );
               didWarnAboutDeprecatedWillMount[componentName] = true;
@@ -661,7 +661,7 @@ function resolve(
         warningWithoutStack(
           false,
           '%s.getChildContext(): childContextTypes must be defined in order to ' +
-            'use getChildContext().',
+          'use getChildContext().',
           getComponentName(Component) || 'Unknown',
         );
       }
@@ -670,7 +670,7 @@ function resolve(
       context = Object.assign({}, context, childContext);
     }
   }
-  return {child, context};
+  return { child, context };
 }
 
 type Frame = {
@@ -923,7 +923,7 @@ class ReactDOMServerRenderer {
       return escapeTextForBrowser(text);
     } else {
       let nextChild;
-      ({child: nextChild, context} = resolve(child, context, this.threadID));
+      ({ child: nextChild, context } = resolve(child, context, this.threadID));
       if (nextChild === null || nextChild === false) {
         return '';
       } else if (!React.isValidElement(nextChild)) {
@@ -933,13 +933,13 @@ class ReactDOMServerRenderer {
           invariant(
             $$typeof !== REACT_PORTAL_TYPE,
             'Portals are not currently supported by the server renderer. ' +
-              'Render them conditionally so that they only appear on the client render.',
+            'Render them conditionally so that they only appear on the client render.',
           );
           // Catch-all to prevent an infinite loop if React.Children.toArray() supports some new type.
           invariant(
             false,
             'Unknown element-like object type: %s. This is likely a bug in React. ' +
-              'Please file an issue.',
+            'Please file an issue.',
             ($$typeof: any).toString(),
           );
         }
@@ -1080,7 +1080,7 @@ class ReactDOMServerRenderer {
             let nextChildren = [
               React.createElement(
                 elementType.type,
-                Object.assign({ref: element.ref}, element.props),
+                Object.assign({ ref: element.ref }, element.props),
               ),
             ];
             const frame: Frame = {
@@ -1138,7 +1138,7 @@ class ReactDOMServerRenderer {
                     warning(
                       false,
                       'Rendering <Context> directly is not supported and will be removed in ' +
-                        'a future major release. Did you mean to render <Context.Consumer> instead?',
+                      'a future major release. Did you mean to render <Context.Consumer> instead?',
                     );
                   }
                 }
@@ -1245,8 +1245,8 @@ class ReactDOMServerRenderer {
       invariant(
         false,
         'Element type is invalid: expected a string (for built-in ' +
-          'components) or a class/function (for composite components) ' +
-          'but got: %s.%s',
+        'components) or a class/function (for composite components) ' +
+        'but got: %s.%s',
         elementType == null ? elementType : typeof elementType,
         info,
       );
@@ -1272,8 +1272,8 @@ class ReactDOMServerRenderer {
         warning(
           tag === element.type,
           '<%s /> is using incorrect casing. ' +
-            'Use PascalCase for React components, ' +
-            'or lowercase for HTML elements.',
+          'Use PascalCase for React components, ' +
+          'or lowercase for HTML elements.',
           element.type,
         );
       }
@@ -1294,11 +1294,11 @@ class ReactDOMServerRenderer {
           warning(
             false,
             '%s contains an input of type %s with both checked and defaultChecked props. ' +
-              'Input elements must be either controlled or uncontrolled ' +
-              '(specify either the checked prop, or the defaultChecked prop, but not ' +
-              'both). Decide between using a controlled or uncontrolled input ' +
-              'element and remove one of these props. More info: ' +
-              'https://fb.me/react-controlled-components',
+            'Input elements must be either controlled or uncontrolled ' +
+            '(specify either the checked prop, or the defaultChecked prop, but not ' +
+            'both). Decide between using a controlled or uncontrolled input ' +
+            'element and remove one of these props. More info: ' +
+            'https://fb.me/react-controlled-components',
             'A component',
             props.type,
           );
@@ -1312,11 +1312,11 @@ class ReactDOMServerRenderer {
           warning(
             false,
             '%s contains an input of type %s with both value and defaultValue props. ' +
-              'Input elements must be either controlled or uncontrolled ' +
-              '(specify either the value prop, or the defaultValue prop, but not ' +
-              'both). Decide between using a controlled or uncontrolled input ' +
-              'element and remove one of these props. More info: ' +
-              'https://fb.me/react-controlled-components',
+            'Input elements must be either controlled or uncontrolled ' +
+            '(specify either the value prop, or the defaultValue prop, but not ' +
+            'both). Decide between using a controlled or uncontrolled input ' +
+            'element and remove one of these props. More info: ' +
+            'https://fb.me/react-controlled-components',
             'A component',
             props.type,
           );
@@ -1347,10 +1347,10 @@ class ReactDOMServerRenderer {
           warning(
             false,
             'Textarea elements must be either controlled or uncontrolled ' +
-              '(specify either the value prop, or the defaultValue prop, but not ' +
-              'both). Decide between using a controlled or uncontrolled textarea ' +
-              'and remove one of these props. More info: ' +
-              'https://fb.me/react-controlled-components',
+            '(specify either the value prop, or the defaultValue prop, but not ' +
+            'both). Decide between using a controlled or uncontrolled textarea ' +
+            'and remove one of these props. More info: ' +
+            'https://fb.me/react-controlled-components',
           );
           didWarnDefaultTextareaValue = true;
         }
@@ -1366,7 +1366,7 @@ class ReactDOMServerRenderer {
             warning(
               false,
               'Use the `defaultValue` or `value` props instead of setting ' +
-                'children on <textarea>.',
+              'children on <textarea>.',
             );
           }
           invariant(
@@ -1407,14 +1407,14 @@ class ReactDOMServerRenderer {
             warning(
               false,
               'The `%s` prop supplied to <select> must be an array if ' +
-                '`multiple` is true.',
+              '`multiple` is true.',
               propName,
             );
           } else if (!props.multiple && isArray) {
             warning(
               false,
               'The `%s` prop supplied to <select> must be a scalar ' +
-                'value if `multiple` is false.',
+              'value if `multiple` is false.',
               propName,
             );
           }
@@ -1428,10 +1428,10 @@ class ReactDOMServerRenderer {
           warning(
             false,
             'Select elements must be either controlled or uncontrolled ' +
-              '(specify either the value prop, or the defaultValue prop, but not ' +
-              'both). Decide between using a controlled or uncontrolled select ' +
-              'element and remove one of these props. More info: ' +
-              'https://fb.me/react-controlled-components',
+            '(specify either the value prop, or the defaultValue prop, but not ' +
+            'both). Decide between using a controlled or uncontrolled select ' +
+            'element and remove one of these props. More info: ' +
+            'https://fb.me/react-controlled-components',
           );
           didWarnDefaultSelectValue = true;
         }
